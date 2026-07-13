@@ -18,15 +18,18 @@ Cet ADR fige ce qui ne doit plus être rediscuté pendant l'implémentation du p
 
 ## Décision
 
-### Hypothèse testée (H1)
+### Hypothèse testée (H1) — affinée après état de l'art
 
-> À budget et contexte contrôlés, une délibération séquentielle visible entre plusieurs modèles de
-> fournisseurs différents produit un cahier des charges et une architecture jugés **meilleurs**
-> qu'un agent unique (A) et qu'un fan-out parallèle suivi d'une synthèse (B).
+> Mesurer la **valeur marginale** d'une critique croisée multi-fournisseurs, **visible et arbitrée
+> par l'utilisateur**, sur deux artefacts ouverts (cahier des charges, architecture), en la
+> **séparant** de l'échantillonnage, de l'agrégation et du calcul supplémentaire.
 
-Le prototype est réputé **utile** uniquement si la condition C (débat) dépasse **A et B** selon les
-seuils préenregistrés de `docs/conception-prototype-debat.md` §10.4. Si C ne bat pas B, le résultat
-reste exploitable : il oriente vers un produit « parallèle + synthèse », plus simple et moins cher.
+L'état de l'art (`docs/etat-art-scientifique.md`) montre qu'à budget égalisé, l'essentiel des gains
+historiques du « débat » disparaît devant des baselines d'échantillonnage/agrégation (vote,
+self-consistency, Self-MoA), et que l'unique étude proche (Oriol 2025, RE) obtient un gain
+négligeable et non significatif du débat sur le parallèle pour un coût ×2. **Le prototype est donc
+un test de falsification rapide de H1, pas une confirmation.** Si le dialogue (D) ne bat pas le
+parallèle à budget égal, le résultat reste utile : il oriente vers « parallèle + synthèse ».
 
 ### Périmètre
 
@@ -64,12 +67,23 @@ workspace, juge LLM contrôlant les transitions.
 - Gates humains obligatoires : `APPROVE_ALIGNMENT`, `APPROVE_SPEC` (sur hash exact), `START_ARCHITECTURE`,
   `APPROVE_ARCHITECTURE` (sur hash exact).
 
-### Conditions expérimentales
+### Conditions expérimentales (révisées — voir `docs/etat-art-scientifique.md`)
 
-- **A** — agent unique performant avec auto-révision.
-- **B** — 3 modèles en parallèle + synthèse, sans critiques croisées.
-- **C** — délibération séquentielle (propositions → critiques croisées → révisions → synthèse).
-- Rotation modèle/rôle en carré latin ; analyse primaire **à budget maximal égal**.
+Escalier isolant chaque facteur ; **contraste principal D vs C**, pas D vs A :
+
+- **A** — meilleur modèle : brouillon + auto-critique + révision (baseline mono-agent forte).
+- **B** — 3 sorties indépendantes du **même** meilleur modèle + synthèse (effet d'échantillonnage / Self-MoA).
+- **C** — 3 **fournisseurs différents** en parallèle + synthèse (effet d'hétérogénéité).
+- **D** — C + 1 critique ciblée/agent + 1 révision en delta + synthèse conservant les réserves + arbitrage humain (effet du dialogue arbitré).
+- **C+** — **contrôle de budget** : dépenser le budget (tokens/coût) de D en échantillonnage
+  parallèle + agrégation. **Le contraste interprétable est D vs C+ à budget égal** (D consomme
+  ~2,5× les appels de C ; sans C+, un « D bat C » est confondu avec « plus de calcul »).
+- Rotation modèle/rôle en carré latin.
+
+**Règle de décision (cost-utility, pré-enregistrée).** Poursuivre seulement si D bat le meilleur
+baseline à budget égal d'une marge **justifiant** son surcoût/latence (~2×). Pilote = 32 artefacts,
+gate à 8 tâches (règles de sortie détaillées dans `docs/etat-art-scientifique.md` §4.2). Étude
+interactive (8–12 praticiens) uniquement si D franchit le gate.
 
 ### Place de Hermes
 
@@ -89,5 +103,11 @@ bord) ; décision go/no-go fondée sur des preuves, pas sur des démonstrations 
   Un « go » sur la qualité specs/archi ne garantit pas le transfert au produit en dépôt.
 - Le go/no-go décide du produit entier sur la qualité d'artefacts de **conception** ; la valeur du
   débat en phase d'**implémentation** reste non testée.
-- La campagne d'évaluation (≈120 productions, 3 évaluateurs aveugles) est un coût significatif en
-  temps humain et en API, à budgéter séparément du build.
+- **Puissance.** Le gate à 8 tâches (≥ 6/8) a ~14 % de faux positif sous H0 (binomiale, p = 0,5) ;
+  le pilote (~8/condition) ne détecte que des effets **grands**. Assumé comme falsification rapide.
+- **Confondu dialogue / arbitrage humain.** D empaquette dialogue **+** arbitrage humain live ;
+  l'effet mesuré est celui du bundle produit, à nommer honnêtement (ou isoler par une variante sans humain).
+- **Évaluation sans oracle exécutable.** Barème caché + évaluateurs aveugles portent l'inférence ;
+  l'accord inter-évaluateurs à n = 8–32 est le risque n°1.
+- La campagne (pilote 32 artefacts, puis étude interactive 8–12 praticiens) reste un coût
+  significatif en temps humain et en API, à budgéter séparément du build.

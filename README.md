@@ -9,8 +9,10 @@ ou qu'un fan-out parallèle suivi d'une synthèse.
 
 ## Documentation
 
+- [État de l'art & protocole corrigé](docs/etat-art-scientifique.md) — ce que dit la recherche sur
+  la (non‑)supériorité du débat, hypothèse affinée, conditions **A/B/C/D + C+**, contraste D vs C(+).
 - [ADR-0001 — Périmètre & invariants](docs/adr/0001-perimetre-invariants.md) — hypothèse testée,
-  périmètre inclus/exclu, invariants non négociables, conditions A/B/C.
+  périmètre inclus/exclu, invariants non négociables, conditions expérimentales.
 - [Conception technique du prototype](docs/conception-prototype-debat.md) — **design directeur**
   (architecture, modèle de données, FSM, protocole de délibération, plan d'évaluation, backlog).
 - [Étude de faisabilité (cadrage produit)](docs/faisabilite-ide-multi-agents.md) — analyse long

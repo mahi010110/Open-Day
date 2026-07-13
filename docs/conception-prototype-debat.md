@@ -631,6 +631,11 @@ Le monorepo `pnpm` utilise TypeScript strict, un `tsconfig` partagé et des vers
 
 ## 10. Plan d'évaluation
 
+> **⚠️ Section superseded (2026-07-13).** Après état de l'art, ce plan (conditions A/B/C, 120
+> productions) est remplacé par le protocole corrigé de `etat-art-scientifique.md` : conditions
+> **A/B/C/D + C+**, contraste principal **D vs C(+) à budget égal**, pilote **32 artefacts** avec
+> gate à 8 tâches. La section ci-dessous est conservée pour l'historique du design.
+
 ### 10.1 Conditions comparées
 
 | Condition | Description | Contrôle de l'équité |
