@@ -4,6 +4,29 @@
 > Toutes les affirmations sur Hermes Agent ont été vérifiées sur sa documentation et son
 > dépôt à jour (voir §14 Sources). Les suppositions sont signalées par **[Supposition]**.
 
+> **Errata & révision — 2026-07-13 (après revue critique).** Corrections apportées à ce
+> rapport à la suite d'une revue technique contradictoire :
+> 1. **ACP (corrigé).** L'affirmation initiale « l'agent survit à la fermeture de l'éditeur »
+>    était **fausse**. Vérification faite sur la doc ACP source : les sessions ACP sont gérées
+>    **en mémoire, liées au processus serveur ACP** (`list/load/resume/fork` limités au processus
+>    courant) ; l'état de session ACP est **perdu à la fermeture de l'éditeur**. Le moteur Hermes
+>    conserve ses journaux `~/.hermes/state.db`, mais ils **ne sont pas restaurés automatiquement**
+>    en mode ACP. L'intégration VS Code passe par une **extension cliente ACP tierce**, pas une
+>    extension Hermes native. Voir §1 (ligne ACP corrigée).
+> 2. **« 60-70 % déjà livré » : [Supposition non démontrée].** Ce chiffre confond *couverture du
+>    runtime* et *adéquation au produit*. Le **plan de contrôle** (modèle de données, invariants,
+>    sémantique décisions/réserves, versions de spec, portes de phase, protocole expérimental)
+>    n'existe **pas** dans Hermes — et c'est le cœur du produit. À lire comme un ordre de grandeur
+>    de réutilisation *runtime*, pas comme une mesure de complétude produit.
+> 3. **Délai MVP « 4-8 semaines » :** valable pour un *spike*, optimiste pour le prototype
+>    évaluable complet (3 API réelles + annulation + reprise + persistance + webview + banc
+>    d'évaluation). Compter plutôt **~2-4 mois** de build avant même la campagne d'évaluation.
+> 4. **Recadrage retenu :** la bonne première étape n'est pas « construire le produit » mais
+>    **une expérience falsifiable A/B/C à seuils préenregistrés** (agent unique vs parallèle+synthèse
+>    vs débat séquentiel), avec **Hermes hors du chemin critique** du prototype et réintroduit
+>    plus tard derrière une interface `AgentRuntimeAdapter`. Voir le document compagnon de
+>    conception du prototype.
+
 ---
 
 ## 0. Verdict franc
@@ -35,7 +58,9 @@ Trois nuances importantes, à lire avant tout le reste :
 **Recommandation de cadrage :** ne pas construire un IDE complet ni un moteur d'orchestration
 from scratch. Construire **une couche produit au-dessus de Hermes Agent** : un client/extension
 qui ajoute (1) le débat multi-modèles arbitré, (2) la machine à états par phases avec cahier
-des charges gelé, (3) l'UX. Hermes fournit tout le « backend » agentique. C'est légal (MIT),
+des charges gelé, (3) l'UX. Hermes fournit une grande partie du **runtime** agentique (exécution,
+providers, sandbox), mais **pas** le plan de contrôle (invariants, décisions/réserves, versions de
+spec, portes de phase) — voir Errata. C'est légal (MIT),
 rapide, et cela concentre l'effort sur ce qui différencie.
 
 ---
@@ -60,7 +85,7 @@ Faits vérifiés sur la doc officielle et le dépôt `NousResearch/hermes-agent`
 | **Profils persistants** | Instances Hermes indépendantes : config, sessions, skills, mémoire isolés par profil. Identité et mémoire persistantes entre sessions. |
 | **Mémoire** | `MEMORY.md` / `USER.md` (mémoire bornée et curée) + recherche FTS5 de l'historique + 8 providers mémoire (Honcho, Mem0, OpenViking, Hindsight, Holographic/SQLite, RetainDB, ByteRover, Supermemory). |
 | **Skills** | Standard ouvert `agentskills.io`, chargement à la demande (progressive disclosure), création autonome de skills. |
-| **ACP (IDE)** | Serveur ACP (Agent Client Protocol) dans **VS Code, Zed, JetBrains**. Rend messages, activité d'outils, **diffs de fichiers**, commandes terminal. L'agent survit à la fermeture de l'éditeur (persistance gateway). |
+| **ACP (IDE)** | Serveur ACP (Agent Client Protocol) utilisable dans **VS Code, Zed, JetBrains** (via une extension cliente ACP tierce, pas une extension Hermes native). Rend messages, activité d'outils, **diffs de fichiers**, commandes terminal. **Correction (voir Errata)** : les sessions ACP sont **en mémoire, liées au processus serveur ACP** ; l'état de session ACP est **perdu à la fermeture de l'éditeur**. **Important sécurité** : ACP expose des outils d'écriture/patch et terminal — une simple consigne « lecture seule » n'est donc **pas** une frontière de sécurité. |
 | **Mixture of Agents 2.0** | Combine des modèles de plusieurs fournisseurs. **Point clé : modèles de référence exécutés en PARALLÈLE, sans schémas d'outils ; leurs sorties sont annexées comme contexte privé à un agrégateur unique** qui produit la réponse et fait les appels d'outils. Ce n'est **pas** un débat où les modèles se lisent/critiquent en tours. |
 | **Cron / automations** | Planificateur intégré pour tâches non surveillées. |
 | **Passerelle messagerie** | 27+ plateformes (Telegram, Discord, Slack, WhatsApp, Signal, Email…). |
@@ -97,9 +122,12 @@ Légende : ✅ existe · 🟡 partiel · ❌ à construire.
 | Historique des décisions | 🟡 | Runs/commentaires SQLite ≈ audit. Une **vue « registre de décisions »** produit est à faire. |
 | Comparaison des diffs proposés (côte à côte multi-agents) | ❌ | À construire (diff view multi-branches/worktrees). |
 
-**Lecture honnête du tableau** : ~60–70 % de votre cahier des charges est **déjà livré** par
-Hermes. Ce qui reste (les ❌) est précisément ce qui fait le produit. Foncer sur les ❌, réutiliser
-les ✅.
+**Lecture honnête du tableau** : **[Supposition non démontrée]** une grande partie de la
+*couche runtime* de votre cahier des charges est déjà couverte par Hermes (l'ordre de grandeur
+« 60-70 % » initialement avancé n'est pas démontré et confond couverture runtime et adéquation
+produit — voir Errata). Ce qui reste (les ❌) — débat interactif, machine à états à phases, spec
+gelée, plan de contrôle/décisions/approbations — n'est **pas** dans Hermes et constitue le
+produit. Foncer sur les ❌, réutiliser les ✅ *quand leur périmètre le justifie*.
 
 ---
 
