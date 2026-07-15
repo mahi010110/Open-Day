@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "studyId": "open-day-smoke-1",
+  "simulated": true,
+  "seed": "open-day-fixed-seed-1",
+  "baselineModel": {
+    "provider": "mock",
+    "model": "deterministic-a"
+  },
+  "diverseModels": [
+    {
+      "provider": "mock",
+      "model": "deterministic-a"
+    },
+    {
+      "provider": "mock",
+      "model": "deterministic-b"
+    },
+    {
+      "provider": "mock",
+      "model": "deterministic-c"
+    }
+  ],
+  "coordinatorModel": {
+    "provider": "mock",
+    "model": "deterministic-a"
+  },
+  "resourceRegimes": [
+    "PROTOCOL_NATIVE",
+    "OUTPUT_TOKEN_MATCHED"
+  ],
+  "maxCostPerConditionUsd": 0.1,
+  "maxOutputTokensPerCall": 1000,
+  "maxOutputTokensPerCondition": 10000,
+  "tasks": [
+    {
+      "id": "collab-spec-1",
+      "category": "SPECIFICATION",
+      "goal": "Rédiger un cahier des charges testable pour une application collaborative de gestion de projets destinée à une petite équipe."
+    },
+    {
+      "id": "collab-arch-1",
+      "category": "ARCHITECTURE",
+      "goal": "Concevoir une architecture logicielle justifiée pour une application collaborative de gestion de projets destinée à une petite équipe."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@open-day/cli",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "open-day": "./dist/index.cjs"
+  },
+  "dependencies": {
+    "@open-day/control-plane": "*",
+    "@open-day/domain": "*",
+    "@open-day/evaluation": "*",
+    "@open-day/runtime": "*",
+    "commander": "^14.0.0"
+  }
+}

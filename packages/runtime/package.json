@@ -1,0 +1,14 @@
+{
+  "name": "@open-day/runtime",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.111.0",
+    "@open-day/domain": "*",
+    "@google/genai": "^2.11.0",
+    "openai": "^6.46.0",
+    "zod": "^4.0.0"
+  }
+}
