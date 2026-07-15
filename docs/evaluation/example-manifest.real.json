@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "studyId": "open-day-pilot-real-1",
+  "simulated": false,
+  "seed": "replace-with-a-preregistered-seed",
+  "baselineModel": {
+    "provider": "openai",
+    "model": "REPLACE_WITH_EXPLICIT_OPENAI_MODEL"
+  },
+  "diverseModels": [
+    {
+      "provider": "openai",
+      "model": "REPLACE_WITH_EXPLICIT_OPENAI_MODEL"
+    },
+    {
+      "provider": "anthropic",
+      "model": "REPLACE_WITH_EXPLICIT_ANTHROPIC_MODEL"
+    },
+    {
+      "provider": "google",
+      "model": "REPLACE_WITH_EXPLICIT_GOOGLE_MODEL"
+    }
+  ],
+  "coordinatorModel": {
+    "provider": "openai",
+    "model": "REPLACE_WITH_EXPLICIT_OPENAI_MODEL"
+  },
+  "resourceRegimes": [
+    "PROTOCOL_NATIVE",
+    "OUTPUT_TOKEN_MATCHED"
+  ],
+  "maxCostPerConditionUsd": 0.5,
+  "maxOutputTokensPerCall": 1200,
+  "maxOutputTokensPerCondition": 12000,
+  "tasks": [
+    {
+      "id": "replace-spec-task-1",
+      "category": "SPECIFICATION",
+      "goal": "Remplacer ce texte par une tâche de cahier des charges préenregistrée comprenant le public, les contraintes et les critères attendus."
+    },
+    {
+      "id": "replace-architecture-task-1",
+      "category": "ARCHITECTURE",
+      "goal": "Remplacer ce texte par une tâche d'architecture préenregistrée comprenant les exigences, les contraintes et les qualités attendues."
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "name": "open-day",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "open-day": "apps/cli/dist/index.cjs"
+  },
+  "files": [
+    "apps/cli/dist/index.cjs",
+    "apps/cli/dist/index.cjs.map",
+    "README.md",
+    "LICENSE"
+  ],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "cli": "node --import tsx apps/cli/src/index.ts",
+    "build": "node scripts/build-cli.mjs",
+    "prepack": "npm run build",
+    "start": "node --disable-warning=ExperimentalWarning apps/cli/dist/index.cjs",
+    "check": "npm run typecheck && npm test && npm run build && npm run smoke && npm run package:check",
+    "smoke": "node scripts/smoke-cli.mjs",
+    "package:check": "node scripts/package-check.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.111.0",
+    "@google/genai": "^2.11.0",
+    "commander": "^14.0.0",
+    "openai": "^6.46.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "esbuild": "^0.28.1",
+    "tsx": "^4.20.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  }
+}
